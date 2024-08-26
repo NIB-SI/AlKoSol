@@ -1,0 +1,29 @@
+Assay:	_A_02_ShotgunMeta-IlluminaSeq
+Assay Class:	WET
+Assay Type:	IlluminaSeq
+Title:	Shotgun metagenomics DNA-seq of brine and water samples
+Description:	*
+pISA Assay creation date:	2024-02-03
+pISA Assay creator:	Marko Petek
+Measurement Type:	nucleic acid sequencing
+Technology Type:	Illumina sequencing
+Lab manager:	Marko Petek
+Library source:	METAGENOMIC
+Library selection:	RANDOM
+Library Layout:	paired
+Platform:	Illumina
+Instrument Model:	NovaSeq X Plus
+Sequencing read length:	150
+Sequencing library strandness:	reverse (R, RF, fr-firststrand)
+Sequencing library prep protocol:	Novogene Metagenomics Library Prep
+File Type:	fastq
+Operator:	*
+Notes:	
+Phenodata:	../../phenodata_20230306.txt
+Featuredata:	
+Data:	
+Principal investigator:	Ana Rotter
+External collaborators:	*
+License:	CC BY 4.0
+Sharing permission:	Public
+Upload to FAIRDOMHub:	Yes

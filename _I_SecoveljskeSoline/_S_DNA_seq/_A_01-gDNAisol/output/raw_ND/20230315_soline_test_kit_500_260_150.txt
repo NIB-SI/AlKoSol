@@ -1,0 +1,4 @@
+Sample ID	User ID	Date 	Time 	ng/ul 	A260 	A280 	260/280 	260/230 	Constant 	Cursor Pos.	Cursor abs.	340 raw
+test 1 mud 500mg	Default	15.3.2023	10:59	29,89	0,598	0,326	1,83	0,89	50,00	230	0,674	0,085
+test 2 mud 260mg	Default	15.3.2023	10:59	15,20	0,304	0,172	1,76	1,04	50,00	230	0,293	0,061
+test 3 mud 150mg	Default	15.3.2023	11:00	13,00	0,260	0,148	1,76	1,09	50,00	230	0,239	0,096

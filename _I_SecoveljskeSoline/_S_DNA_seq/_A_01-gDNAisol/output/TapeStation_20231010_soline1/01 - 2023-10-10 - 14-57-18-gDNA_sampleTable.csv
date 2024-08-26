@@ -1,0 +1,15 @@
+Well,Sample Description,Conc. [ng/µl],Alert,Observations,Source,DIN,FileName,Reagent Lot#,ScreenTape Lot#
+A1,Ladder,71.3,!,Caution! Expired ScreenTape device; Ladder,,,01 - 2023-10-10 - 14.57.18.gDNA,0006713569,0202735-141
+B1,Soline_1,118,!,Caution! Expired ScreenTape device; Sample concentration outside recommended range,,6.5,01 - 2023-10-10 - 14.57.18.gDNA,0006713569,0202735-141
+C1,Soline_2,97.8,!,Caution! Expired ScreenTape device,,6.3,01 - 2023-10-10 - 14.57.18.gDNA,0006713569,0202735-141
+D1,Soline_3,77.2,!,Caution! Expired ScreenTape device,,6.6,01 - 2023-10-10 - 14.57.18.gDNA,0006713569,0202735-141
+E1,Soline_4,85.6,!,Caution! Expired ScreenTape device,,6.0,01 - 2023-10-10 - 14.57.18.gDNA,0006713569,0202735-141
+F1,Soline_5,115,!,Caution! Expired ScreenTape device; Sample concentration outside recommended range,,6.2,01 - 2023-10-10 - 14.57.18.gDNA,0006713569,0202735-141
+G1,Soline_6,49.2,!,Caution! Expired ScreenTape device,,5.9,01 - 2023-10-10 - 14.57.18.gDNA,0006713569,0202735-141
+H1,Soline_7,68.4,!,Caution! Expired ScreenTape device,,6.5,01 - 2023-10-10 - 14.57.18.gDNA,0006713569,0202735-141
+A2,Soline_8,106,!,Caution! Expired ScreenTape device; Sample concentration outside recommended range,,6.4,01 - 2023-10-10 - 14.57.18.gDNA,0006713569,0202735-141
+B2,Soline_9,20.2,!,Caution! Expired ScreenTape device,,6.2,01 - 2023-10-10 - 14.57.18.gDNA,0006713569,0202735-141
+C2,Soline_10,18.2,!,Caution! Expired ScreenTape device,,6.2,01 - 2023-10-10 - 14.57.18.gDNA,0006713569,0202735-141
+D2,Soline_11,19.3,!,Caution! Expired ScreenTape device,,6.1,01 - 2023-10-10 - 14.57.18.gDNA,0006713569,0202735-141
+E2,Soline_12,31.3,!,Caution! Expired ScreenTape device,,6.2,01 - 2023-10-10 - 14.57.18.gDNA,0006713569,0202735-141
+F2,Soline_13,1.63,!!,Caution! Expired ScreenTape device; Sample concentration outside functional range for DIN and the assay,,,01 - 2023-10-10 - 14.57.18.gDNA,0006713569,0202735-141

@@ -1,0 +1,2 @@
+Tape Name,Username,ScreenTape Device ID,Expiry Date,ScreenTape Device History,Temperature [°C],Electrophoresis Time [s],Instrument Type,Instrument Serial Number,Notes,ScreenTape Device Run Date,Reagent Lot #,ScreenTape Lot #,Computer,Instrument Controller Software Version,First Run Analysis Version,Operating System
+ScreenTape Device 1,SF,01-S025-230906-01-000215,24-Oct-2023,"First run 10-Oct-2023, 1 run(s) performed",23.8,215,4150 TapeStation (G2992A),DEDAB02619,soline,10-Oct-2023,0006713569,0203021-30,FITO-TS4150-W10,4.1.1.7772,4.1.1.7772,Microsoft Windows 11 Pro

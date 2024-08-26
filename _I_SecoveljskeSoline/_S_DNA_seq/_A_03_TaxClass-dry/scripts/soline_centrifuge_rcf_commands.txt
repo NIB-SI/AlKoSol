@@ -1,0 +1,176 @@
+# markop@egret.nib.si
+
+screen -R markop
+
+conda activate centrifuge
+
+cd /DKED/scratch/markop/WORK/_p_ExtAnalysis/_I_SecoveljskeSoline/_S_DNA_seq/_A_03_TaxClass-dry/scripts
+
+# copy raw fastq and prepare input
+
+rsync -av markop@heron:/data-staging/ready_for_upload/_omics/NGS_var_dna-seq_2023_markop_AlkoSol-shotgun-metagenomics-soline/data/*.gz ../input/fq
+
+pigz -d ../input/fq/*.gz
+
+bash cat_fq.sh
+
+#centrifuge
+
+mkdir ../output/centrifuge
+
+ulimit -u 9999
+
+# IMPORTANT: Running Centrifuge with the -k 1 option is strongly recommended, as it will force the LCA (Lowest Common Ancestor) strategy for classification, ensuring just a single call per read at most, as it's the default behavior in other taxonomic classification softwares. If a different setting is used in Centrifuge, then Recentrifuge statistics will be based on calls instead of reads.
+#   -k <int>              report upto <int> distinct, primary assignments for each read or pair
+
+for f in `ls -1 ../input/fq_cat/*_1.fq | sed 's/_1.fq//' | grep -o '......$' `
+do
+  centrifuge -x /bioDBs/centrifuge/dbs_v2018/nt -1 ../input/fq_cat/${f}_1.fq -2 ../input/fq_cat/${f}_2.fq -S ../output/centrifuge/output_centrifuge_${f}.txt --report-file ../output/centrifuge/output_report_${f}.txt --seed 42 -k 1 -p 36
+done
+
+
+for f in `ls -1 ../input/fq_cat/*_1.fq | sed 's/_1.fq//' | grep -o '......$' `
+do
+  centrifuge-kreport -x /bioDBs/centrifuge/dbs_v2018/nt ../output/centrifuge/output_centrifuge_${f}.txt > ../output/centrifuge/kreport_${f}.txt
+done
+
+conda deactivate
+
+# clean deflated fq folders
+rm ../input/fq/*.fq
+rm ../input/fq_cat/*.fq
+
+
+
+#################
+#run pavian in R / RStudio:
+## Installs required packages from CRAN and Bioconductor
+source("https://raw.githubusercontent.com/fbreitwieser/pavian/master/inst/shinyapp/app.R")
+
+pavian::runApp(port=5000)
+
+
+#################
+### ReCentrifuge
+# cut-off to retain only high-scored taxa (minscore 75 as in the Recentrifuge publication Fig S7)
+
+# no control!
+#excluding taxa assigned to Phix174microvirus (taxid 1910954), Chordata (animals, including rodents and human; taxid 7711), unclassified sequences (taxid 12908) and other sequences (taxid 28384).
+
+screen -R markopRCF
+
+conda activate recentrifuge
+
+cd /DKED/scratch/markop/WORK/_p_ExtAnalysis/_I_SecoveljskeSoline/_S_DNA_seq/_A_03_TaxClass-dry/scripts
+
+# petola samples only
+rcf \
+-n ../input/rcf/taxdmp \
+-c 0 \
+-f ../output/centrifuge/output_centrifuge_SOL001.txt \
+-f ../output/centrifuge/output_centrifuge_SOL002.txt \
+-f ../output/centrifuge/output_centrifuge_SOL003.txt \
+-f ../output/centrifuge/output_centrifuge_SOL004.txt \
+-f ../output/centrifuge/output_centrifuge_SOL005.txt \
+-f ../output/centrifuge/output_centrifuge_SOL006.txt \
+-f ../output/centrifuge/output_centrifuge_SOL007.txt \
+-f ../output/centrifuge/output_centrifuge_SOL008.txt \
+-f ../output/centrifuge/output_centrifuge_SOL009.txt \
+-f ../output/centrifuge/output_centrifuge_SOL010.txt \
+-f ../output/centrifuge/output_centrifuge_SOL012.txt \
+-f ../output/centrifuge/output_centrifuge_SOL019.txt \
+-f ../output/centrifuge/output_centrifuge_SOL020.txt \
+-f ../output/centrifuge/output_centrifuge_SOL021.txt \
+-f ../output/centrifuge/output_centrifuge_SOL022.txt \
+-f ../output/centrifuge/output_centrifuge_SOL023.txt \
+-f ../output/centrifuge/output_centrifuge_SOL024.txt \
+-f ../output/centrifuge/output_centrifuge_SOL026.txt \
+-f ../output/centrifuge/output_centrifuge_SOL029.txt \
+-f ../output/centrifuge/output_centrifuge_SOL032.txt \
+-f ../output/centrifuge/output_centrifuge_SOL033.txt \
+-f ../output/centrifuge/output_centrifuge_SOL034.txt \
+-f ../output/centrifuge/output_centrifuge_SOL035.txt \
+-x 1910954 -x 7711 -x 12908 -x 28384 \
+--minscore 75 \
+-o ../output/rcf/SOL_all_petola-DNAseq_cut75.rcf.html
+
+
+# petola samples only
+rcf \
+-n ../input/rcf/taxdmp \
+-c 0 \
+-f ../output/centrifuge/output_centrifuge_SOL001.txt \
+-f ../output/centrifuge/output_centrifuge_SOL002.txt \
+-f ../output/centrifuge/output_centrifuge_SOL003.txt \
+-f ../output/centrifuge/output_centrifuge_SOL004.txt \
+-f ../output/centrifuge/output_centrifuge_SOL005.txt \
+-f ../output/centrifuge/output_centrifuge_SOL006.txt \
+-f ../output/centrifuge/output_centrifuge_SOL007.txt \
+-f ../output/centrifuge/output_centrifuge_SOL008.txt \
+-f ../output/centrifuge/output_centrifuge_SOL009.txt \
+-f ../output/centrifuge/output_centrifuge_SOL010.txt \
+-f ../output/centrifuge/output_centrifuge_SOL012.txt \
+-f ../output/centrifuge/output_centrifuge_SOL019.txt \
+-f ../output/centrifuge/output_centrifuge_SOL020.txt \
+-f ../output/centrifuge/output_centrifuge_SOL021.txt \
+-f ../output/centrifuge/output_centrifuge_SOL022.txt \
+-f ../output/centrifuge/output_centrifuge_SOL023.txt \
+-f ../output/centrifuge/output_centrifuge_SOL024.txt \
+-f ../output/centrifuge/output_centrifuge_SOL026.txt \
+-f ../output/centrifuge/output_centrifuge_SOL029.txt \
+-f ../output/centrifuge/output_centrifuge_SOL032.txt \
+-f ../output/centrifuge/output_centrifuge_SOL033.txt \
+-x 1910954 -x 7711 -x 12908 -x 28384 \
+--minscore 75 \
+-o ../output/rcf/SOL_petola-DNAseq_cut75.rcf.html
+
+# brine samples only
+rcf \
+-n ../input/rcf/taxdmp \
+-c 0 \
+-f ../output/centrifuge/output_centrifuge_SOL034.txt \
+-f ../output/centrifuge/output_centrifuge_SOL035.txt \
+-x 1910954 -x 7711 -x 12908 -x 28384 \
+--minscore 75 \
+-o ../output/rcf/SOL_brine-DNAseq_cut75.rcf.html
+
+# petola - low salinity samples only
+rcf \
+-n ../input/rcf/taxdmp \
+-c 0 \
+-f ../output/centrifuge/output_centrifuge_SOL001.txt \
+-f ../output/centrifuge/output_centrifuge_SOL002.txt \
+-f ../output/centrifuge/output_centrifuge_SOL003.txt \
+-f ../output/centrifuge/output_centrifuge_SOL004.txt \
+-f ../output/centrifuge/output_centrifuge_SOL005.txt \
+-f ../output/centrifuge/output_centrifuge_SOL006.txt \
+-f ../output/centrifuge/output_centrifuge_SOL007.txt \
+-f ../output/centrifuge/output_centrifuge_SOL008.txt \
+-f ../output/centrifuge/output_centrifuge_SOL019.txt \
+-f ../output/centrifuge/output_centrifuge_SOL020.txt \
+-f ../output/centrifuge/output_centrifuge_SOL021.txt \
+-f ../output/centrifuge/output_centrifuge_SOL032.txt \
+-f ../output/centrifuge/output_centrifuge_SOL033.txt \
+-x 1910954 -x 7711 -x 12908 -x 28384 \
+--minscore 75 \
+-o ../output/rcf/SOL_petola_LOWsalinity-DNAseq_cut75.rcf.html
+
+# petola - high salinity samples only
+rcf \
+-n ../input/rcf/taxdmp \
+-c 0 \
+-f ../output/centrifuge/output_centrifuge_SOL009.txt \
+-f ../output/centrifuge/output_centrifuge_SOL010.txt \
+-f ../output/centrifuge/output_centrifuge_SOL012.txt \
+-f ../output/centrifuge/output_centrifuge_SOL022.txt \
+-f ../output/centrifuge/output_centrifuge_SOL023.txt \
+-f ../output/centrifuge/output_centrifuge_SOL024.txt \
+-f ../output/centrifuge/output_centrifuge_SOL026.txt \
+-f ../output/centrifuge/output_centrifuge_SOL029.txt \
+-x 1910954 -x 7711 -x 12908 -x 28384 \
+--minscore 75 \
+-o ../output/rcf/SOL_petola_HIGHsalinity-DNAseq_cut75.rcf.html
+
+
+conda deactivate
+ 

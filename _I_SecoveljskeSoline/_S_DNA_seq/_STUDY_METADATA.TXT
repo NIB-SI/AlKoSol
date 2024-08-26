@@ -1,0 +1,11 @@
+Study:	_S_DNA_seq
+Title:	DNA_seq
+Description:	Sequencing of total intracellular DNA, isolated from mud and petola samples from Seèovlje salt pans
+Raw Data:	
+pISA Study creation date:	2023-03-14
+pISA Study creator:	SF
+Principal investigator:	Ana Rotter
+External collaborators:	*
+License:	CC BY 4.0
+Sharing permission:	Public
+Upload to FAIRDOMHub:	Yes

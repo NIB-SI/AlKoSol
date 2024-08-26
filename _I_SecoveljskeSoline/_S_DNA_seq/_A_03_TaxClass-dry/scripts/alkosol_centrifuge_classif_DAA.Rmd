@@ -1,0 +1,432 @@
+---
+title: "AlKoSoL taxonomic classification of metagenomics differential abundance analysis (DAA)"
+author: "Marko Petek"
+date: "2024-05-26"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE, echo=FALSE, warning=FALSE}
+knitr::opts_chunk$set(
+	fig.align = "center",
+	fig.height = 8,
+	fig.width = 9,
+	message = FALSE,
+	warning = FALSE,
+	dev = c("png")
+)
+knitr::opts_knit$set(root.dir = "O:/DEJAVNOSTI/OMIKE/pISA-Projects/_p_ExtAnalysis/_I_SecoveljskeSoline/_S_DNA_seq/_A_03_TaxClass-dry/reports")
+```
+
+# Dataset description
+
+**Samples**
+
+- material sampled: petola (21); 2 brine samples also but will not be used here
+- time points (days post treatment, DPT): 5
+- biol. replicates: 4-5
+- total sample number: 21
+
+**Sequencing**
+
+- DNA-seq: PE150 (Novogene)
+- taxonomic classification of reads: Centrifuge -> recentrifuge (cutoff 75)
+
+# Setting-up the environment
+
+## Package installation (optional)
+run if necessary, admin privileges might be required
+```{r package installation, eval=FALSE, warning=TRUE, include=FALSE}
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("Maaslin2")
+```
+
+## Package loading
+```{r packages loading}
+library("Maaslin2")
+
+setwd("O:/DEJAVNOSTI/OMIKE/pISA-Projects/_p_ExtAnalysis/_I_SecoveljskeSoline/_S_DNA_seq/_A_03_TaxClass-dry/scripts")
+```
+
+# MaAsLin2 
+
+##Data import 
+The data was prepared so that:
+
+- only the counts (cnt columns) from the full recentrifuge output table were retained
+- all taxonomic levels higher than species were removed (reads assigned there were discarded)
+
+
+```{r}
+input_data <- read.delim('../../_A_03_TaxClass-dry/output/rcf/SOL_petola-DNAseq_cut75.rcf.count_table_species_matrix.tsv')
+row.names(input_data) <- input_data[, 1]
+
+input_metadata <-read.delim('../input/phenodata_20230306_petola_sequenced.txt')
+row.names(input_metadata) <- input_metadata[, 1]
+```
+
+
+
+## Linear model fit
+
+For (G)LM with LOG transformation, reported coefficients can be interpreted as log2 fold change:
+
+- "with a log2 transformation in place (default in MaAsLin 2, similar to limma), the coefficients can be interpreted as the log2 fold-changes themselves, as explained here " [https://forum.biobakery.org/t/trying-to-understand-coef-column-and-how-to-convert-it-to-fold-change/3136/7]
+
+What to choose as the reference for the fixed effects variables?
+
+- for Brine_salinity_factor: low (more intuitive)
+- for Sampling_month: April (because it corresponds to low salinity)
+- also had to provide also a reference for Season, so I chose "summer" because the comparisons then are "spring vs summer" and "autumn vs summer"
+
+```{r}
+fit_data <- Maaslin2(
+    input_data, input_metadata, '../output/MaAsLin2_LM',
+    min_abundance = 2, 
+    min_prevalence = 0.2, 
+    normalization = "CSS",
+    transform = "LOG",
+    analysis_method = "LM",
+    max_significance = 0.05, 
+    max_pngs = 10,
+    cores = 8, 
+    save_scatter = FALSE,
+    save_models = FALSE,
+    fixed_effects = c('Brine_salinity_factor','Season','Sampling_month'),
+    reference = 'Brine_salinity_factor,low;Season,summer,Sampling_month,April',
+    standardize = FALSE
+    )
+```
+
+## Negative binomial model fit
+
+Some additional documentation here from [https://forum.biobakery.org/t/choosing-analysis-method-for-maaslin2/2107/9]:
+
+- For statistical models, if your input is count, then you can use NEGBIN and ZINB, whereas, for non-count input, you can use LM and CPLM.
+
+- Apart from the statistical models, you need to pay close attention to whether the selected normalization and transformation options are valid with respect to the input requirement above.
+
+- Among the normalization approaches implemented in MaAsLin 2, TMM and CSS only work on counts and they also return normalized counts unlike TSS and CLR. Therefore, if your input is count, you can use the above two normalizations (i.e., TMM, CSS, or NONE (in case the data is already normalized)) without a further transformation (i.e. transform = 'NONE').
+
+- Among the non-count models, CPLM requires the data to be positive. Therefore, any transformation that produces negative values will typically NOT work for CPLM.
+
+- All the non-LM models use an intrinsic log link transformation due to their close connection to GLMs and they are recommended to be run with transform = 'NONE'.
+
+- Apart from that, LM is the only model that works on both positive and negative values (following normalization/transformation) and you have more wiggle room to vary the corresponding parameters which are typically limited for non-LM models.
+
+
+```{r}
+fit_data <- Maaslin2(
+    input_data, input_metadata, '../output/MaAsLin2_NEGBIN',
+    min_abundance = 2, 
+    min_prevalence = 0.2, 
+    normalization = "CSS",
+    transform = "NONE",
+    analysis_method = "NEGBIN",
+    max_significance = 0.05, 
+    max_pngs = 50,
+    cores = 8, 
+    save_scatter = FALSE,
+    save_models = FALSE,
+    fixed_effects = c('Brine_salinity_factor','Season','Sampling_month'),
+    reference = 'Brine_salinity_factor,low;Season,summer,Sampling_month,April',
+    standardize = FALSE
+    )
+```
+
+
+
+# edgeR::voomLmFit
+
+```{r}
+library("edgeR")
+head(t(input_data[, -1]))
+```
+
+## Filter low abundance taxa and TMM-normalize counts
+```{r}
+y <- DGEList(counts = t(input_data[, -1]), group = input_metadata$Sampling_month)
+keep <- filterByExpr(y, min.count = 2)
+y <- y[keep, , keep.lib.sizes=FALSE]
+y <- normLibSizes(y, method = "TMM")
+```
+
+## Multi-dimensional scaling plot
+```{r}
+mds <- plotMDS(y, col=c(1,1,1,1,2,2,2,2,3,3,3,5,5,5,4,4,4,4,3,5,5), labels = paste0(y$samples$group, "_", colnames(y)), cex = 0.8)
+points(mds$x, mds$y -0.1 , pch = 20, col=c(1,1,1,1,2,2,2,2,3,3,3,5,5,5,4,4,4,4,3,5,5))
+```
+
+## FACTOR: Sampling_month
+
+### Design
+```{r}
+design <- model.matrix(~0+input_metadata$Sampling_month)
+
+colnames(design) <- levels(as.factor(input_metadata$Sampling_month))
+
+y <- estimateDisp(y, design, robust=TRUE)
+plotBCV(y)
+```
+
+### voomLmFit and contrasts
+```{r}
+fit <- edgeR::voomLmFit(y, design = design, sample.weights = TRUE, normalize.method = "none", plot = TRUE)
+
+contrasts <- makeContrasts(  May-April,
+                             July-April,
+                             August-April,
+                             September-April,
+                             levels = design)
+
+fit <- contrasts.fit(fit, contrasts)
+fit2 <- eBayes(fit)
+```
+
+### Fit QC plot
+```{r}
+plotSA(fit2)
+```
+
+```{r}
+summary(decideTests(fit2))
+```
+### MD plots
+
+```{r}
+logFCcut <- 1
+dt <- decideTests(fit2, lfc = logFCcut)
+
+for (i in 1:length(colnames(fit2$coeff))) {
+plotMD(fit2, coef=i, status=dt[, i], values = c(-1, 1), hl.col=c("blue","red"), ylim= c(-15,15))
+} 
+```
+### Summarize result topTables
+```{r}
+# Initialize a list to store the results
+results_list <- list()
+
+# Loop over all coefficients
+for (i in 1:length(colnames(fit2$contrasts))) {
+  results_list[[i]] <- topTable(fit2, coef=i, number=1000000, sort.by="none")[, c("logFC", "adj.P.Val")]
+  colnames(results_list[[i]]) <- c(paste0(colnames(fit2$contrasts)[i], "_logFC"), paste0(colnames(fit2$contrasts)[i], "_adj.P.Val"))
+}
+
+results_matrix <- do.call(cbind, results_list)
+head(results_matrix)
+
+```
+
+### Add normalized counts to stats table
+```{r}
+#add normalized CPMs to stats
+results_matrix.addcpms <- merge(results_matrix, cpm(y), by.x="row.names", by.y="row.names", all.x= TRUE, all.y= FALSE, sort= FALSE)
+colnames(results_matrix.addcpms)[1] <- "Species"
+
+head(results_matrix.addcpms)
+```
+
+### Export DAA results to tsv file
+```{r eval=FALSE, include=TRUE}
+write.table(results_matrix.addcpms, file="../output/voomLmFit/voomLmFit_DAA_SamplingMonth.tsv", sep="\t", quote=TRUE, row.names=FALSE)
+```
+
+
+
+
+## FACTOR: Season
+
+### Design
+```{r}
+design <- model.matrix(~0+input_metadata$Season)
+
+colnames(design) <- levels(as.factor(input_metadata$Season))
+
+y <- estimateDisp(y, design, robust=TRUE)
+plotBCV(y)
+```
+
+### voomLmFit and contrasts
+```{r}
+fit <- edgeR::voomLmFit(y, design = design, sample.weights = TRUE, normalize.method = "none", plot = TRUE)
+
+contrasts <- makeContrasts(  spring-summer,
+                             autumn-summer,
+                             levels = design)
+
+fit <- contrasts.fit(fit, contrasts)
+fit2 <- eBayes(fit)
+```
+
+### Fit QC plot
+```{r}
+plotSA(fit2)
+```
+
+```{r}
+summary(decideTests(fit2))
+```
+### MD plots
+
+```{r}
+logFCcut <- 1
+dt <- decideTests(fit2, lfc = logFCcut)
+
+for (i in 1:length(colnames(fit2$coeff))) {
+plotMD(fit2, coef=i, status=dt[, i], values = c(-1, 1), hl.col=c("blue","red"), ylim= c(-15,15))
+} 
+```
+### Summarize result topTables
+```{r}
+# Initialize a list to store the results
+results_list <- list()
+
+# Loop over all coefficients
+for (i in 1:length(colnames(fit2$contrasts))) {
+  results_list[[i]] <- topTable(fit2, coef=i, number=1000000, sort.by="none")[, c("logFC", "adj.P.Val")]
+  colnames(results_list[[i]]) <- c(paste0(colnames(fit2$contrasts)[i], "_logFC"), paste0(colnames(fit2$contrasts)[i], "_adj.P.Val"))
+}
+
+results_matrix <- do.call(cbind, results_list)
+head(results_matrix)
+
+```
+
+### Add normalized counts to stats table
+```{r}
+#add normalized CPMs to stats
+results_matrix.addcpms <- merge(results_matrix, cpm(y), by.x="row.names", by.y="row.names", all.x= TRUE, all.y= FALSE, sort= FALSE)
+colnames(results_matrix.addcpms)[1] <- "Species"
+
+head(results_matrix.addcpms)
+```
+
+### Export DAA results to tsv file
+```{r eval=FALSE, include=TRUE}
+write.table(results_matrix.addcpms, file="../output/voomLmFit/voomLmFit_DAA_Season.tsv", sep="\t", quote=TRUE, row.names=FALSE)
+```
+
+
+
+
+## FACTOR: Brine_salinity_factor
+
+### Design
+```{r}
+design <- model.matrix(~0+input_metadata$Brine_salinity_factor)
+
+colnames(design) <- levels(as.factor(input_metadata$Brine_salinity_factor))
+
+y <- estimateDisp(y, design, robust=TRUE)
+plotBCV(y)
+```
+
+### voomLmFit and contrasts
+```{r}
+fit <- edgeR::voomLmFit(y, design = design, sample.weights = TRUE, normalize.method = "none", plot = TRUE)
+
+contrasts <- makeContrasts(  high-low,
+                             levels = design)
+
+fit <- contrasts.fit(fit, contrasts)
+fit2 <- eBayes(fit)
+```
+
+### Fit QC plot
+```{r}
+plotSA(fit2)
+```
+
+```{r}
+summary(decideTests(fit2))
+```
+### MD plots
+
+```{r}
+logFCcut <- 1
+dt <- decideTests(fit2, lfc = logFCcut)
+
+for (i in 1:length(colnames(fit2$coeff))) {
+plotMD(fit2, coef=i, status=dt[, i], values = c(-1, 1), hl.col=c("blue","red"), ylim= c(-15,15))
+} 
+```
+### Summarize result topTables
+```{r}
+# Initialize a list to store the results
+results_list <- list()
+
+# Loop over all coefficients
+for (i in 1:length(colnames(fit2$contrasts))) {
+  results_list[[i]] <- topTable(fit2, coef=i, number=1000000, sort.by="none")[, c("logFC", "adj.P.Val")]
+  colnames(results_list[[i]]) <- c(paste0(colnames(fit2$contrasts)[i], "_logFC"), paste0(colnames(fit2$contrasts)[i], "_adj.P.Val"))
+}
+
+results_matrix <- do.call(cbind, results_list)
+head(results_matrix)
+
+```
+
+### Add normalized counts to stats table
+```{r}
+#add normalized CPMs to stats
+results_matrix.addcpms <- merge(results_matrix, cpm(y), by.x="row.names", by.y="row.names", all.x= TRUE, all.y= FALSE, sort= FALSE)
+colnames(results_matrix.addcpms)[1] <- "Species"
+
+head(results_matrix.addcpms)
+```
+
+### Export DAA results to tsv file
+```{r eval=FALSE, include=TRUE}
+write.table(results_matrix.addcpms, file="../output/voomLmFit/voomLmFit_DAA_Brine_salinity_factor.tsv", sep="\t", quote=TRUE, row.names=FALSE)
+```
+
+
+# Merge MaAsLin2 and voomLmFit results
+
+```{r}
+m1 <- read.delim('../output/MaAsLin2_LM/all_results.tsv')
+m2 <- read.delim('../output/MaAsLin2_NEGBIN/all_results.tsv')
+
+
+m1_1 <- m1[ m1$metadata == "Brine_salinity_factor", ]
+m1_2 <- m1[ m1$metadata == "Sampling_month", ]
+m1_3 <- m1[ m1$metadata == "Season", ]
+
+m2_1 <- m2[ m2$metadata == "Brine_salinity_factor", ]
+m2_2 <- m2[ m2$metadata == "Sampling_month", ]
+m2_3 <- m2[ m2$metadata == "Season", ]
+
+m_1 <- merge(m1_1[, c(1:4,7,9)], m2_1[, c(1:4,7,9)], by = "feature", all = TRUE, sort = FALSE, suffixes = c(".MaAsLin2_LM", ".MaAsLin2_NEGBIN"))
+m_2 <- merge(m1_2[, c(1:4,7,9)], m2_2[, c(1:4,7,9)], by = "feature", all = TRUE, sort = FALSE, suffixes = c(".MaAsLin2_LM", ".MaAsLin2_NEGBIN"))
+m_3 <- merge(m1_3[, c(1:4,7,9)], m2_3[, c(1:4,7,9)], by = "feature", all = TRUE, sort = FALSE, suffixes = c(".MaAsLin2_LM", ".MaAsLin2_NEGBIN"))
+```
+
+  
+```{r}
+v1 <- read.delim('../output/voomLmFit/voomLmFit_DAA_Brine_salinity_factor.tsv')
+v2 <- read.delim('../output/voomLmFit/voomLmFit_DAA_SamplingMonth.tsv')
+v3 <- read.delim('../output/voomLmFit/voomLmFit_DAA_Season.tsv')
+
+mr1 <- merge(m_1, v1, by = 1, all = TRUE, sort = FALSE)
+
+# these cannot be merged because they have several coefs in v
+#mr2 <- merge(m_2, v2_1, by = 1, all = TRUE, sort = FALSE)
+#mr3 <- merge(m_3, v3_1, by = 1, all = TRUE, sort = FALSE)
+
+```
+
+```{r}
+write.table(mr1, file="../output/merged_results_Brine_salinity_factor.tsv", sep="\t", quote=TRUE, row.names=FALSE)
+
+```
+
+
+# SessionInfo
+```{r}
+sessionInfo()
+```
+

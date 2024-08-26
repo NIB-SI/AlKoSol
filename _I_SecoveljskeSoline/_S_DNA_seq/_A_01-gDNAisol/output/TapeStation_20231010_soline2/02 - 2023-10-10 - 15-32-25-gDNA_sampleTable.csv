@@ -1,0 +1,10 @@
+Well,Sample Description,Conc. [ng/µl],Alert,Observations,Source,DIN,FileName,Reagent Lot#,ScreenTape Lot#
+A1,Ladder,70.5,,Ladder,,,02 - 2023-10-10 - 15.32.25.gDNA,0006713569,0203021-30
+B1,Soline_14,8.86,!,Sample concentration outside recommended range,,6.5,02 - 2023-10-10 - 15.32.25.gDNA,0006713569,0203021-30
+C1,Soline_15,7.76,!,Sample concentration outside recommended range,,6.8,02 - 2023-10-10 - 15.32.25.gDNA,0006713569,0203021-30
+D1,Soline_16,13.3,,,,6.4,02 - 2023-10-10 - 15.32.25.gDNA,0006713569,0203021-30
+E1,Soline_17,1.22,!!,Sample concentration outside functional range for DIN and the assay,,,02 - 2023-10-10 - 15.32.25.gDNA,0006713569,0203021-30
+F1,Soline_18,1.79,!!,Sample concentration outside functional range for DIN and the assay,,,02 - 2023-10-10 - 15.32.25.gDNA,0006713569,0203021-30
+G1,Soline_19,74.0,,,,6.5,02 - 2023-10-10 - 15.32.25.gDNA,0006713569,0203021-30
+H1,Soline_20,66.7,,,,7.9,02 - 2023-10-10 - 15.32.25.gDNA,0006713569,0203021-30
+A2,Soline_21,106,!,Sample concentration outside recommended range,,6.9,02 - 2023-10-10 - 15.32.25.gDNA,0006713569,0203021-30
