@@ -2,7 +2,7 @@ Assay:	_A_01-gDNAisol
 Assay Class:	WET
 Assay Type:	gDNAisol
 Title:	gDNAisol
-Description:	Isolation of total intracellular DNA from mud and petola samples from Seèovlje salt pans.
+Description:	Isolation of total intracellular DNA from mud and petola samples from SeŸovlje salt pans.
 pISA Assay creation date:	2023-03-14
 pISA Assay creator:	SF
 Phenodata:	../../phenodata_20230306.txt
@@ -12,4 +12,3 @@ Principal investigator:	Ana Rotter
 External collaborators:	*
 License:	CC BY 4.0
 Sharing permission:	Public
-Upload to FAIRDOMHub:	Yes
