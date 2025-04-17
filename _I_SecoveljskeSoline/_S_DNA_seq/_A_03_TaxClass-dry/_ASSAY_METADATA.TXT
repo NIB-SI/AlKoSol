@@ -2,7 +2,7 @@ Assay:	_A_03_TaxClass-dry
 Assay Class:	DRY
 Assay Type:	dry
 Title:	Taxonomic classification of reads
-Description:	Taxonomic classification of reads
+Description:	Taxonomic classification using SingleM
 pISA Assay creation date:	2024-02-22
 pISA Assay creator:	Marko Petek
 Phenodata:	../../phenodata_20230306.txt
@@ -12,4 +12,3 @@ Principal investigator:	Ana Rotter
 External collaborators:	*
 License:	CC BY 4.0
 Sharing permission:	Public
-Upload to FAIRDOMHub:	Yes
