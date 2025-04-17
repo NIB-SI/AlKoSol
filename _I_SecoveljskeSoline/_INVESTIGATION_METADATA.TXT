@@ -4,8 +4,7 @@ Description:	DNA isolation of mud samples from Seèovlje salt pans
 Phenodata:	./phenodata_20230306.txt
 pISA Investigation creation date:	2023-03-06
 pISA Investigation creator:	SF
-Principal investigator:	Ana Rotter
+Principal investigator:	*
 External collaborators:	*
 License:	CC BY 4.0
 Sharing permission:	Public
-Upload to FAIRDOMHub:	Yes
