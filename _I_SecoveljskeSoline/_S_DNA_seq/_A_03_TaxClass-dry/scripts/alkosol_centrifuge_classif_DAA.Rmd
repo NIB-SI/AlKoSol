@@ -83,7 +83,7 @@ What to choose as the reference for the fixed effects variables?
 - for Sampling_month: April (because it corresponds to low salinity)
 - also had to provide also a reference for Season, so I chose "summer" because the comparisons then are "spring vs summer" and "autumn vs summer"
 
-```{r}
+```{r echo=FALSE, message=FALSE}
 fit_data <- Maaslin2(
     input_data, input_metadata, '../output/MaAsLin2_LM',
     min_abundance = 2, 
@@ -157,7 +157,7 @@ y <- normLibSizes(y, method = "TMM")
 
 ## Multi-dimensional scaling plot
 ```{r}
-mds <- plotMDS(y, col=c(1,1,1,1,2,2,2,2,3,3,3,5,5,5,4,4,4,4,3,5,5), labels = paste0(y$samples$group, "_", colnames(y)), cex = 0.8)
+mds <- plotMDS(y, col=c(1,1,1,1,2,2,2,2,3,3,3,5,5,5,4,4,4,4,3,5,5), labels = paste0(y$samples$group, "_", c(1:4,1:4,1:3,1:3,1:4,4,4:5)), cex = 1.2, cex.axis = 1.2, cex.lab = 1.2)
 points(mds$x, mds$y -0.1 , pch = 20, col=c(1,1,1,1,2,2,2,2,3,3,3,5,5,5,4,4,4,4,3,5,5))
 ```
 

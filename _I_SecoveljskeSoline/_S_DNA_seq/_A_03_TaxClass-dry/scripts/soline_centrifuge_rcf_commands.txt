@@ -172,5 +172,145 @@ rcf \
 -o ../output/rcf/SOL_petola_HIGHsalinity-DNAseq_cut75.rcf.html
 
 
+## run again to output TSV files instead of XLSX
+
+# petola - low salinity samples only
+rcf \
+-n ../input/rcf/taxdmp \
+-c 0 \
+-f ../output/centrifuge/output_centrifuge_SOL001.txt \
+-f ../output/centrifuge/output_centrifuge_SOL002.txt \
+-f ../output/centrifuge/output_centrifuge_SOL003.txt \
+-f ../output/centrifuge/output_centrifuge_SOL004.txt \
+-f ../output/centrifuge/output_centrifuge_SOL005.txt \
+-f ../output/centrifuge/output_centrifuge_SOL006.txt \
+-f ../output/centrifuge/output_centrifuge_SOL007.txt \
+-f ../output/centrifuge/output_centrifuge_SOL008.txt \
+-f ../output/centrifuge/output_centrifuge_SOL019.txt \
+-f ../output/centrifuge/output_centrifuge_SOL020.txt \
+-f ../output/centrifuge/output_centrifuge_SOL021.txt \
+-f ../output/centrifuge/output_centrifuge_SOL032.txt \
+-f ../output/centrifuge/output_centrifuge_SOL033.txt \
+-x 1910954 -x 7711 -x 12908 -x 28384 \
+--minscore 75 \
+--extra TSV \
+-o ../output/rcf/SOL_petola_LOWsalinity-DNAseq_cut75.rcf.html
+
+# petola - high salinity samples only
+rcf \
+-n ../input/rcf/taxdmp \
+-c 0 \
+-f ../output/centrifuge/output_centrifuge_SOL009.txt \
+-f ../output/centrifuge/output_centrifuge_SOL010.txt \
+-f ../output/centrifuge/output_centrifuge_SOL012.txt \
+-f ../output/centrifuge/output_centrifuge_SOL022.txt \
+-f ../output/centrifuge/output_centrifuge_SOL023.txt \
+-f ../output/centrifuge/output_centrifuge_SOL024.txt \
+-f ../output/centrifuge/output_centrifuge_SOL026.txt \
+-f ../output/centrifuge/output_centrifuge_SOL029.txt \
+-x 1910954 -x 7711 -x 12908 -x 28384 \
+--extra TSV \
+--minscore 75 \
+-o ../output/rcf/SOL_petola_HIGHsalinity-DNAseq_cut75.rcf.html
+
+## also checked DYNOMICS output and it is of no use
+
+## trying to modify rcf in the recentrifuge conda env to output also XML:
+## PATH: /DKEC/users/markop/.conda/envs/recentrifuge/bin/rcf (the original rcf was saved in the same directory as rcf.old)
+
+mkdir ../output/rcf_modrcf
+
+# petola - high salinity samples only
+rcf \
+-n ../input/rcf/taxdmp \
+-c 0 \
+-f ../output/centrifuge/output_centrifuge_SOL009.txt \
+-f ../output/centrifuge/output_centrifuge_SOL010.txt \
+-f ../output/centrifuge/output_centrifuge_SOL012.txt \
+-f ../output/centrifuge/output_centrifuge_SOL022.txt \
+-f ../output/centrifuge/output_centrifuge_SOL023.txt \
+-f ../output/centrifuge/output_centrifuge_SOL024.txt \
+-f ../output/centrifuge/output_centrifuge_SOL026.txt \
+-f ../output/centrifuge/output_centrifuge_SOL029.txt \
+-x 1910954 -x 7711 -x 12908 -x 28384 \
+--minscore 75 \
+-o ../output/rcf_modrcf/SOL_petola_HIGHsalinity-DNAseq_cut75.rcf.html
+
+
+## only summary, change the order of samples in LOW to retain same coloring for superkingdom levels 
+
+mkdir ../output/rcf_summary
+
+
+# petola - low salinity samples only
+rcf \
+-n ../input/rcf/taxdmp \
+-c 0 \
+-f ../output/centrifuge/output_centrifuge_SOL020.txt \
+-f ../output/centrifuge/output_centrifuge_SOL001.txt \
+-f ../output/centrifuge/output_centrifuge_SOL002.txt \
+-f ../output/centrifuge/output_centrifuge_SOL003.txt \
+-f ../output/centrifuge/output_centrifuge_SOL004.txt \
+-f ../output/centrifuge/output_centrifuge_SOL005.txt \
+-f ../output/centrifuge/output_centrifuge_SOL006.txt \
+-f ../output/centrifuge/output_centrifuge_SOL007.txt \
+-f ../output/centrifuge/output_centrifuge_SOL008.txt \
+-f ../output/centrifuge/output_centrifuge_SOL019.txt \
+-f ../output/centrifuge/output_centrifuge_SOL021.txt \
+-f ../output/centrifuge/output_centrifuge_SOL032.txt \
+-f ../output/centrifuge/output_centrifuge_SOL033.txt \
+-x 1910954 -x 7711 -x 12908 -x 28384 \
+--minscore 75 \
+--summary ONLY \
+-o ../output/rcf_summary/SOL_petola_LOWsalinity-DNAseq_cut75.rcf.html
+
+# petola - high salinity samples only
+rcf \
+-n ../input/rcf/taxdmp \
+-c 0 \
+-f ../output/centrifuge/output_centrifuge_SOL009.txt \
+-f ../output/centrifuge/output_centrifuge_SOL010.txt \
+-f ../output/centrifuge/output_centrifuge_SOL012.txt \
+-f ../output/centrifuge/output_centrifuge_SOL022.txt \
+-f ../output/centrifuge/output_centrifuge_SOL023.txt \
+-f ../output/centrifuge/output_centrifuge_SOL024.txt \
+-f ../output/centrifuge/output_centrifuge_SOL026.txt \
+-f ../output/centrifuge/output_centrifuge_SOL029.txt \
+-x 1910954 -x 7711 -x 12908 -x 28384 \
+--summary ONLY \
+--minscore 75 \
+-o ../output/rcf_summary/SOL_petola_HIGHsalinity-DNAseq_cut75.rcf.html
+
+conda deactivate
+
+
+
+
+####################################################################################################################################
+# this part not needed - some code that lead to nowhere
+####################################################################################################################################
+
+
+## instead try to build Krona graph out of the TSVs that recentrifuge produces
+
+conda activate krona
+
+mkdir ../output/kronatools
+
+#ktImportKrona -o krona-test_Krona.html ../output/rcf/SOL_petola_LOWsalinity-DNAseq_cut75.rcf.html
+# outputs empty krona plot, seems like recentrifuge-generated html is not compatiple with latest KronaTools
+
+ktUpdateTaxonomy.sh
+
+# removing taxonomy IDs that are set to root if I run ktImportTaxonomy
+# also removing unclassified sequences, Phix, other sequences and Chordata (1910954 7711 12908 28384)
+grep -v -E '^(1910954|7711|12908|28384|81850|354203|85643|119065|1849491|446458|40677|541000|1109743|1515594|2116545|312352|159511|1673076|319236|1535326|1515598|1644055|335819|6308|119541|1928335|342610|1609958|3152|1552995|1307773|10662|2321108|62323|656024|184592|85000|10744|1182571|35130|2832|196894|1156433|1653479|188962|1290979|186813|1963271|40136|1965299|28883|927587|1702102|332056|338187|1364944|196895|97495|1290983|1418105|723663|158080|84593|1978339|210592|1364938|159345|857479|35237|1763447|80870|2304686|1849530|1159429|387095|1397107|1547899|10699|330|1740163|1890452|2304692|65047|927586|335659|1897615|1702105|139150|2005363|1427149|671223|1644060|5749|6314|1546149|62153)' \
+../output/rcf/SOL_petola_LOWsalinity-DNAseq_cut75.rcf.data.tsv | grep -v 'no_rank' > ../output/rcf/SOL_petola_LOWsalinity-DNAseq_cut75.rcf.data_filtered.tsv
+grep -v -E '^(1910954|7711|12908|28384|81850|354203|85643|119065|1849491|446458|40677|541000|1109743|1515594|2116545|312352|159511|1673076|319236|1535326|1515598|1644055|335819|6308|119541|1928335|342610|1609958|3152|1552995|1307773|10662|2321108|62323|656024|184592|85000|10744|1182571|35130|2832|196894|1156433|1653479|188962|1290979|186813|1963271|40136|1965299|28883|927587|1702102|332056|338187|1364944|196895|97495|1290983|1418105|723663|158080|84593|1978339|210592|1364938|159345|857479|35237|1763447|80870|2304686|1849530|1159429|387095|1397107|1547899|10699|330|1740163|1890452|2304692|65047|927586|335659|1897615|1702105|139150|2005363|1427149|671223|1644060|5749|6314|1546149|62153)' \
+../output/rcf/SOL_petola_HIGHsalinity-DNAseq_cut75.rcf.data.tsv | grep -v 'no_rank' > ../output/rcf/SOL_petola_HIGHsalinity-DNAseq_cut75.rcf.data_filtered.tsv
+#this removed the unassigned and colors are consistent between the graphs BUT still not consistent % with rcf krona graphs
+
+ktImportTaxonomy -t 1 -m 194 -o ../output/kronatools/krona_summary_reconstruction_from_rcf_TSV.html ../output/rcf/SOL_petola_LOWsalinity-DNAseq_cut75.rcf.data_filtered.tsv ../output/rcf/SOL_petola_HIGHsalinity-DNAseq_cut75.rcf.data_filtered.tsv
+
 conda deactivate
  
