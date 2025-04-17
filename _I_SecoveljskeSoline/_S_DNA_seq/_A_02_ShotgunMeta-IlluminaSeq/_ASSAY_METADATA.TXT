@@ -14,7 +14,7 @@ Library Layout:	paired
 Platform:	Illumina
 Instrument Model:	NovaSeq X Plus
 Sequencing read length:	150
-Sequencing library strandness:	reverse (R, RF, fr-firststrand)
+Sequencing library strandness:	unstranded
 Sequencing library prep protocol:	Novogene Metagenomics Library Prep
 File Type:	fastq
 Operator:	*
@@ -26,4 +26,3 @@ Principal investigator:	Ana Rotter
 External collaborators:	*
 License:	CC BY 4.0
 Sharing permission:	Public
-Upload to FAIRDOMHub:	Yes
