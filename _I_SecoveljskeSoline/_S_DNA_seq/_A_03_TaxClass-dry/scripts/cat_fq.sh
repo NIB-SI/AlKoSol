@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Define source and target directories
-source_dir="/scratch/markop/WORK/_p_ExtAnalysis/_I_SecoveljskeSoline/_S_DNA_seq/_A_02_ShotgunMeta-IlluminaSeq/input/fq"
-target_dir="/scratch/markop/WORK/_p_ExtAnalysis/_I_SecoveljskeSoline/_S_DNA_seq/_A_02_ShotgunMeta-IlluminaSeq/input/fq_cat"
+source_dir="../_A_02_ShotgunMeta-IlluminaSeq/input/fq"
+target_dir="../_A_02_ShotgunMeta-IlluminaSeq/input/fq_cat"
 
 # Check if source directory exists
 if [ ! -d "$source_dir" ]; then
