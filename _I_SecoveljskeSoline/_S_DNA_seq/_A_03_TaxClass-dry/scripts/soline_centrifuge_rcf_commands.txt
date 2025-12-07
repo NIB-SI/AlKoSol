@@ -1,14 +1,8 @@
-# markop@egret.nib.si
+# run on egret
 
 screen -R markop
 
 conda activate centrifuge
-
-cd /DKED/scratch/markop/WORK/_p_ExtAnalysis/_I_SecoveljskeSoline/_S_DNA_seq/_A_03_TaxClass-dry/scripts
-
-# copy raw fastq and prepare input
-
-rsync -av markop@heron:/data-staging/ready_for_upload/_omics/NGS_var_dna-seq_2023_markop_AlkoSol-shotgun-metagenomics-soline/data/*.gz ../input/fq
 
 pigz -d ../input/fq/*.gz
 
@@ -282,35 +276,3 @@ rcf \
 -o ../output/rcf_summary/SOL_petola_HIGHsalinity-DNAseq_cut75.rcf.html
 
 conda deactivate
-
-
-
-
-####################################################################################################################################
-# this part not needed - some code that lead to nowhere
-####################################################################################################################################
-
-
-## instead try to build Krona graph out of the TSVs that recentrifuge produces
-
-conda activate krona
-
-mkdir ../output/kronatools
-
-#ktImportKrona -o krona-test_Krona.html ../output/rcf/SOL_petola_LOWsalinity-DNAseq_cut75.rcf.html
-# outputs empty krona plot, seems like recentrifuge-generated html is not compatiple with latest KronaTools
-
-ktUpdateTaxonomy.sh
-
-# removing taxonomy IDs that are set to root if I run ktImportTaxonomy
-# also removing unclassified sequences, Phix, other sequences and Chordata (1910954 7711 12908 28384)
-grep -v -E '^(1910954|7711|12908|28384|81850|354203|85643|119065|1849491|446458|40677|541000|1109743|1515594|2116545|312352|159511|1673076|319236|1535326|1515598|1644055|335819|6308|119541|1928335|342610|1609958|3152|1552995|1307773|10662|2321108|62323|656024|184592|85000|10744|1182571|35130|2832|196894|1156433|1653479|188962|1290979|186813|1963271|40136|1965299|28883|927587|1702102|332056|338187|1364944|196895|97495|1290983|1418105|723663|158080|84593|1978339|210592|1364938|159345|857479|35237|1763447|80870|2304686|1849530|1159429|387095|1397107|1547899|10699|330|1740163|1890452|2304692|65047|927586|335659|1897615|1702105|139150|2005363|1427149|671223|1644060|5749|6314|1546149|62153)' \
-../output/rcf/SOL_petola_LOWsalinity-DNAseq_cut75.rcf.data.tsv | grep -v 'no_rank' > ../output/rcf/SOL_petola_LOWsalinity-DNAseq_cut75.rcf.data_filtered.tsv
-grep -v -E '^(1910954|7711|12908|28384|81850|354203|85643|119065|1849491|446458|40677|541000|1109743|1515594|2116545|312352|159511|1673076|319236|1535326|1515598|1644055|335819|6308|119541|1928335|342610|1609958|3152|1552995|1307773|10662|2321108|62323|656024|184592|85000|10744|1182571|35130|2832|196894|1156433|1653479|188962|1290979|186813|1963271|40136|1965299|28883|927587|1702102|332056|338187|1364944|196895|97495|1290983|1418105|723663|158080|84593|1978339|210592|1364938|159345|857479|35237|1763447|80870|2304686|1849530|1159429|387095|1397107|1547899|10699|330|1740163|1890452|2304692|65047|927586|335659|1897615|1702105|139150|2005363|1427149|671223|1644060|5749|6314|1546149|62153)' \
-../output/rcf/SOL_petola_HIGHsalinity-DNAseq_cut75.rcf.data.tsv | grep -v 'no_rank' > ../output/rcf/SOL_petola_HIGHsalinity-DNAseq_cut75.rcf.data_filtered.tsv
-#this removed the unassigned and colors are consistent between the graphs BUT still not consistent % with rcf krona graphs
-
-ktImportTaxonomy -t 1 -m 194 -o ../output/kronatools/krona_summary_reconstruction_from_rcf_TSV.html ../output/rcf/SOL_petola_LOWsalinity-DNAseq_cut75.rcf.data_filtered.tsv ../output/rcf/SOL_petola_HIGHsalinity-DNAseq_cut75.rcf.data_filtered.tsv
-
-conda deactivate
- 
