@@ -7,7 +7,7 @@ SICRIS project web page: https://cris.cobiss.net/ecris/en/en/project/19991
 
 ## Raw sequencing data
 
-Shotgun metagenomic sequencing data are available at SRA under BioProject accession number [PRJNA1225550](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA1225550).
+Shotgun metagenomic raw sequencing reads are available at SRA under BioProject accession number [PRJNA1225550](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA1225550).
 
 ## DNA isolation
 
