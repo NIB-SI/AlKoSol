@@ -5,6 +5,10 @@ Official project web page: https://projects.nib.si/alkosol/
 
 SICRIS project web page: https://cris.cobiss.net/ecris/en/en/project/19991 
 
+## Raw sequencing data
+
+Shotgun metagenomic sequencing data are available at SRA under BioProject accession number [PRJNA1225550](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA1225550).
+
 ## DNA isolation
 
 The wet lab DNA protocol for DNA isolation is available here: [_I_SecoveljskeSoline/_S_DNA_seq/_A_01-gDNAisol/Protocols](./_I_SecoveljskeSoline/_S_DNA_seq/_A_01-gDNAisol/Protocols).
