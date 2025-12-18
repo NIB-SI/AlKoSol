@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 	warning = FALSE,
 	dev = c("png")
 )
-knitr::opts_knit$set(root.dir = "O:/DEJAVNOSTI/OMIKE/pISA-Projects/_p_ExtAnalysis/_I_SecoveljskeSoline/_S_DNA_seq/_A_03_TaxClass-dry/reports")
+knitr::opts_knit$set(root.dir = "./_I_SecoveljskeSoline/_S_DNA_seq/_A_03_TaxClass-dry/reports")
 ```
 
 # Dataset description
@@ -49,7 +49,7 @@ BiocManager::install("Maaslin2")
 ```{r packages loading}
 library("Maaslin2")
 
-setwd("O:/DEJAVNOSTI/OMIKE/pISA-Projects/_p_ExtAnalysis/_I_SecoveljskeSoline/_S_DNA_seq/_A_03_TaxClass-dry/scripts")
+setwd("./_I_SecoveljskeSoline/_S_DNA_seq/_A_03_TaxClass-dry/scripts")
 ```
 
 # MaAsLin2 
@@ -429,4 +429,5 @@ write.table(mr1, file="../output/merged_results_Brine_salinity_factor.tsv", sep=
 ```{r}
 sessionInfo()
 ```
+
 
