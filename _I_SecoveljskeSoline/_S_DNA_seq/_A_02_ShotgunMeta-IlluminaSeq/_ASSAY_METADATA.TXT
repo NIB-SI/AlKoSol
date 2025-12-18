@@ -2,7 +2,7 @@ Assay:	_A_02_ShotgunMeta-IlluminaSeq
 Assay Class:	WET
 Assay Type:	IlluminaSeq
 Title:	Shotgun metagenomics DNA-seq of brine and water samples
-Description:	*
+Description:	Shotgun metagenomics library prep and DNA sequencing was performed by Novogene Inc
 pISA Assay creation date:	2024-02-03
 pISA Assay creator:	Marko Petek
 Measurement Type:	nucleic acid sequencing
@@ -17,7 +17,7 @@ Sequencing read length:	150
 Sequencing library strandness:	unstranded
 Sequencing library prep protocol:	Novogene Metagenomics Library Prep
 File Type:	fastq
-Operator:	*
+Operator:	Novogene
 Notes:	
 Phenodata:	../../phenodata_20230306.txt
 Featuredata:	
