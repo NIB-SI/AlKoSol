@@ -1,5 +1,5 @@
 # AlKoSol
-This repository contains code and supplementary materials for the AlKoSol project. The data and metadata are organized using the [pISA-tree](https://github.com/NIB-SI/pISA-tree) research data management framework. 
+This repository contains code and supplementary materials for the AlKoSol project's shotgun metagenomics data analysis. The data and metadata are organized using the [pISA-tree](https://github.com/NIB-SI/pISA-tree) research data management framework. 
 
 Official project web page: https://projects.nib.si/alkosol/
 
