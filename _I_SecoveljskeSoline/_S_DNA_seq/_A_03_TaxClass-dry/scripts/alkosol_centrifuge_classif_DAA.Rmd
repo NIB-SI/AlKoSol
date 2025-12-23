@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 	warning = FALSE,
 	dev = c("png")
 )
-knitr::opts_knit$set(root.dir = "./_I_SecoveljskeSoline/_S_DNA_seq/_A_03_TaxClass-dry/reports")
+knitr::opts_knit$set(root.dir = "O:/DEJAVNOSTI/OMIKE/pISA-Projects/_p_ExtAnalysis/_I_SecoveljskeSoline/_S_DNA_seq/_A_03_TaxClass-dry/reports")
 ```
 
 # Dataset description
@@ -49,7 +49,7 @@ BiocManager::install("Maaslin2")
 ```{r packages loading}
 library("Maaslin2")
 
-setwd("./_I_SecoveljskeSoline/_S_DNA_seq/_A_03_TaxClass-dry/scripts")
+setwd("O:/DEJAVNOSTI/OMIKE/pISA-Projects/_p_ExtAnalysis/_I_SecoveljskeSoline/_S_DNA_seq/_A_03_TaxClass-dry/scripts")
 ```
 
 # MaAsLin2 
@@ -160,6 +160,41 @@ y <- normLibSizes(y, method = "TMM")
 mds <- plotMDS(y, col=c(1,1,1,1,2,2,2,2,3,3,3,5,5,5,4,4,4,4,3,5,5), labels = paste0(y$samples$group, "_", c(1:4,1:4,1:3,1:3,1:4,4,4:5)), cex = 1.2, cex.axis = 1.2, cex.lab = 1.2)
 points(mds$x, mds$y -0.1 , pch = 20, col=c(1,1,1,1,2,2,2,2,3,3,3,5,5,5,4,4,4,4,3,5,5))
 ```
+
+Plotting the ellipses
+
+```{r}
+mds <- plotMDS(y, col=c(1,1,1,1,2,2,2,2,3,3,3,5,5,5,4,4,4,4,3,5,5), labels = paste0(y$samples$group, "_", c(1:4,1:4,1:3,1:3,1:4,4,4:5)), cex = 1.2, cex.axis = 1.2, cex.lab = 1.2, xlim = c(-2.5, 3), ylim = c(-2.5, 2.5),
+xlab = "Principal coordinate dimension 1", ylab = "Principal coordinate dimension 2")
+
+points(mds$x, mds$y -0.1 , pch = 20, col=c(1,1,1,1,2,2,2,2,3,3,3,5,5,5,4,4,4,4,3,5,5))
+
+# add centroids
+MDS_coords <- data.frame(Dim1 = mds$x, Dim2 = mds$y, Group = y$samples$group)
+centroids <- aggregate(cbind(Dim1, Dim2) ~ Group, data = MDS_coords, FUN = mean)
+points(centroids$Dim1, centroids$Dim2, col = c(1,4,3,2,5), pch = 4, cex = 2, lwd = 2)
+
+library(vegan)
+# Add ellipses for 95% confidence intervals
+ordiellipse(MDS_coords[, 1:2], y$samples$group, kind = "se", conf = 0.95, display = "sites", label = FALSE, col = c(1,4,3,2,5) )
+#ordiellipse(MDS_coords[, 1:2], y$samples$group, kind = "ehull", display = "sites", label = FALSE, col = c(1,4,3,2,5) )
+```
+
+
+```{r}
+library(ggplot2)
+
+MDS_coords <- data.frame(Dim1 = mds$x, Dim2 = mds$y, Group = y$samples$group)
+
+ggplot(MDS_coords, aes(x = Dim1, y = Dim2, color = Group)) +
+    geom_point() +
+   stat_ellipse(type = "t", level = 0.95) + # Adds 95% confidence ellipse
+#   stat_summary(fun = mean, geom = "point", shape = 4, size = 3, stroke = 2) + # Adds centroids (X shape)
+   theme_minimal()
+
+
+```
+
 
 ## FACTOR: Sampling_month
 
@@ -429,5 +464,4 @@ write.table(mr1, file="../output/merged_results_Brine_salinity_factor.tsv", sep=
 ```{r}
 sessionInfo()
 ```
-
 
